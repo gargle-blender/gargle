@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.gargle</groupId>
-    <artifactId>spring-boot-starter-gargle</artifactId>
+    <artifactId>gargle-parent</artifactId>
     <version>${version}</version>
     <name>spring-boot-starter-gargle</name>
     <description>Gargle project for Spring Boot</description>
