@@ -5,7 +5,7 @@
     <groupId>com.gargle</groupId>
     <artifactId>gargle-parent</artifactId>
     <version>${version}</version>
-    <name>spring-boot-starter-gargle</name>
+    <name>gargle-parent</name>
     <description>Gargle project for Spring Boot</description>
 
     <properties>
