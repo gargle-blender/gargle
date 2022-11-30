@@ -222,9 +222,6 @@ public class SFTPUtil {
      *
      * @param directory  上传到sftp目录
      * @param uploadFile 要上传的文件,包括路径
-     * @throws FileNotFoundException
-     * @throws SftpException
-     * @throws Exception
      */
     public void upload(String directory, String uploadFile) throws FileNotFoundException, SftpException {
         File file = new File(uploadFile);
@@ -237,8 +234,6 @@ public class SFTPUtil {
      * @param directory    上传到sftp目录
      * @param sftpFileName 文件在sftp端的命名
      * @param byteArr      要上传的字节数组
-     * @throws SftpException
-     * @throws Exception
      */
     public void upload(String directory, String sftpFileName, byte[] byteArr) throws SftpException {
         upload(directory, sftpFileName, new ByteArrayInputStream(byteArr));
@@ -251,9 +246,6 @@ public class SFTPUtil {
      * @param sftpFileName 文件在sftp端的命名
      * @param dataStr      待上传的数据
      * @param charsetName  sftp上的文件，按该字符编码保存
-     * @throws UnsupportedEncodingException
-     * @throws SftpException
-     * @throws Exception
      */
     public void upload(String directory, String sftpFileName, String dataStr, String charsetName) throws UnsupportedEncodingException, SftpException {
         upload(directory, sftpFileName, new ByteArrayInputStream(dataStr.getBytes(charsetName)));
@@ -265,9 +257,6 @@ public class SFTPUtil {
      * @param directory    下载目录
      * @param downloadFile 下载的文件
      * @param saveFile     本地的文件
-     * @throws SftpException
-     * @throws FileNotFoundException
-     * @throws Exception
      */
     public void download(String directory, String downloadFile, String saveFile) throws SftpException, FileNotFoundException {
         try {
@@ -288,8 +277,6 @@ public class SFTPUtil {
      *
      * @param directory  要删除文件所在目录
      * @param deleteFile 要删除的文件
-     * @throws SftpException
-     * @throws Exception
      */
     public void delete(String directory, String deleteFile) throws SftpException {
         sftp.cd(directory);
@@ -300,8 +287,6 @@ public class SFTPUtil {
      * 列出目录下的文件
      *
      * @param directory 要列出的目录
-     * @return
-     * @throws SftpException
      */
     public Boolean isFileExist(String directory) throws SftpException {
         try {

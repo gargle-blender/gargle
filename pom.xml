@@ -8,6 +8,7 @@
     <version>${revision}</version>
 
     <packaging>pom</packaging>
+    <url>https://github.com/gargle-blender/gargle</url>
 
     <modules>
         <module>gargle-common-utils</module>
@@ -49,36 +50,65 @@
         <url>https://github.com/gargle-blender/gargle.git</url>
     </scm>
 
-    <!--<build>
+    <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
+                    <serverId>gargle</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.3.7.RELEASE</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
                 <configuration>
-                    <mainClass>com.gargle.starter.SpringBootStarterGargleApplication</mainClass>
+                    <failOnError>false</failOnError>
+                    <quiet>true</quiet>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>repackage</id>
+                        <id>attach-javadocs</id>
                         <goals>
-                            <goal>repackage</goal>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
-    </build>-->
+    </build>
 
     <distributionManagement>
         <snapshotRepository>
@@ -91,7 +121,7 @@
         </repository>
     </distributionManagement>
 
-    <profiles>
+    <!--<profiles>
         <profile>
             <id>gargle</id>
             <build>
@@ -140,6 +170,6 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+    </profiles>-->
 
 </project>
