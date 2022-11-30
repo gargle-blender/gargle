@@ -397,6 +397,12 @@ public class GargleConfig {
 
         private AutoOffsetResetEnum consumerAutoOffsetReset = AutoOffsetResetEnum.EARLIEST;
 
+        /**
+         * 格式: k1=v1;k2=v2......
+         * 该配置优先级最高.
+         */
+        private String otherConfProperties;
+
         public Properties toConsumerProperties() {
             Properties p = new Properties();
             ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
@@ -436,6 +442,11 @@ public class GargleConfig {
             map.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, this.enableAutoCommit);
             map.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, this.consumerMaxPollRecords);
             map.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, this.consumerAutoCommitIntervalMs);
+
+            Map<String, String> mapOther = ConfigUtil.buildProperties(otherConfProperties);
+            if (mapOther != null && mapOther.size() > 0){
+                map.putAll(mapOther);
+            }
         }
     }
 
@@ -502,6 +513,12 @@ public class GargleConfig {
 
         Integer requestTimeoutMs = 300_000;
 
+        /**
+         * 格式: k1=v1;k2=v2......
+         * 该配置优先级最高.
+         */
+        private String otherConfProperties;
+
         public Properties buildProperties() {
             if (!enable) {
                 return null;
@@ -530,6 +547,11 @@ public class GargleConfig {
             properties.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, maxRequestSize);
             properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, this.bufferMemory);
             properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, this.requestTimeoutMs);
+
+            Map<String, String> map = ConfigUtil.buildProperties(otherConfProperties);
+            if (map != null && map.size() > 0){
+                properties.putAll(map);
+            }
 
             return properties;
         }
