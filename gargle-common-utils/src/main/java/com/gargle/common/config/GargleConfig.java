@@ -511,6 +511,10 @@ public class GargleConfig {
                 throw new GargleException("[KafkaProducerConfig] bootstrap.servers 配置缺失.");
             }
 
+            if (StringUtil.isBlank(this.producerName)){
+                throw new GargleException("[KafkaProducerConfig] producerName 配置缺失.");
+            }
+
             if (StringUtil.isNotBlank(this.clientId)) {
                 properties.put(ProducerConfig.CLIENT_ID_CONFIG, this.clientId);
             }
