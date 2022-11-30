@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.github.shangqingwen</groupId>
+    <groupId>io.github.gargle-blender</groupId>
     <artifactId>gargle-parent</artifactId>
     <version>${revision}</version>
 
@@ -23,7 +23,7 @@
         <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <revision>1.0.0-SNAPSHOT</revision>
+        <revision>1.0.0-RELEASE</revision>
     </properties>
 
     <licenses>
@@ -37,16 +37,16 @@
 
     <developers>
         <developer>
-            <name>shangqingwen</name>
+            <name>gargle-blender</name>
             <email>422701684@qq.com</email>
-            <url>https://github.com/shangqingwen</url>
+            <url>https://github.com/gargle-blender</url>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/shangqingwen/gargle.git</connection>
-        <developerConnection>scm:git:ssh://github.com/shangqingwen/gargle.git</developerConnection>
-        <url>https://github.com/shangqingwen/gargle.git</url>
+        <connection>scm:git:git://github.com/gargle-blender/gargle.git</connection>
+        <developerConnection>scm:git:ssh://github.com/gargle-blender/gargle.git</developerConnection>
+        <url>https://github.com/gargle-blender/gargle.git</url>
     </scm>
 
     <!--<build>
@@ -83,11 +83,11 @@
     <distributionManagement>
         <snapshotRepository>
             <id>gargle</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>gargle</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
@@ -102,8 +102,8 @@
                         <version>1.6.8</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>sonatype-snapshots</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <serverId>gargle</serverId>
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
@@ -124,17 +124,15 @@
                             </execution>
                         </executions>
                     </plugin>
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
+                                <id>attach-sources</id>
                                 <goals>
-                                    <goal>sign</goal>
+                                    <goal>jar-no-fork</goal>
                                 </goals>
                             </execution>
                         </executions>
