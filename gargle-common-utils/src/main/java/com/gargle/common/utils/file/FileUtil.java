@@ -14,8 +14,6 @@ import java.util.Scanner;
  * Description:
  *
  * @author qingwen.shang
- * @email shangqaq@163.com
- * @date 2022/11/29 14:24
  */
 public final class FileUtil {
 
@@ -184,10 +182,6 @@ public final class FileUtil {
 
     /**
      * 目标文件中包含key的行写入其他文件
-     *
-     * @param pathName      目标文件
-     * @param key           索引key值
-     * @param writePathName 其他文件
      */
     public static String readFile(String pathName, String key, String writePathName) {
         StringBuilder stringBuilder = new StringBuilder();

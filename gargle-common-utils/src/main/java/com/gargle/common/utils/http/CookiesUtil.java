@@ -13,8 +13,6 @@ import java.util.Map;
  * Description:
  *
  * @author qingwen.shang
- * @email shangqaq@163.com
- * @date 2022/11/29 14:24
  */
 public final class CookiesUtil {
 

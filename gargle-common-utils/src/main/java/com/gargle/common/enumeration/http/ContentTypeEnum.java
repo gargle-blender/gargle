@@ -5,8 +5,6 @@ package com.gargle.common.enumeration.http;
  * Description:
  *
  * @author qingwen.shang
- * @email shangqaq@163.com
- * @date 2022/11/30 10:36
  */
 public enum ContentTypeEnum {
 
