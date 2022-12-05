@@ -55,6 +55,34 @@ public class GargleConfig {
         if (datasource.isEnable()) {
             datasource.setConnectionProperties(ConfigUtil.buildConnectionProperties(datasource));
         }
+
+        Set<String> set = new HashSet<>(16);
+        if (kafkaConsumers != null && kafkaConsumers.size() > 0){
+            for (KafkaConsumerConfig kafkaConsumer : kafkaConsumers) {
+                if (kafkaConsumer == null || !kafkaConsumer.isEnable()){
+                    continue;
+                }
+                if (set.contains(kafkaConsumer.getConsumerName())){
+                    throw new IllegalArgumentException("[kafkaConsumers] 配置存在两个值相同的 ConsumerName 属性!");
+                }
+
+                set.add(kafkaConsumer.getConsumerName());
+            }
+        }
+        set.clear();
+
+        if (kafkaProducers != null && kafkaProducers.size() > 0){
+            for (KafkaProducerConfig kafkaProducer : kafkaProducers) {
+                if (kafkaProducer == null || !kafkaProducer.isEnable()){
+                    continue;
+                }
+                if (set.contains(kafkaProducer.getProducerName())){
+                    throw new IllegalArgumentException("[kafkaProducers] 配置存在两个值相同的 ProducerName 属性!");
+                }
+                set.add(kafkaProducer.getProducerName());
+            }
+        }
+        set.clear();
     }
 
     @Data
