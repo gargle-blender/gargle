@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @email shangqaq@163.com
  * @date 2022/11/29 18:40
  */
-public abstract class BaseConsumer<K, V, T> implements Serializable {
+public abstract class BaseConsumer<K, V, R> implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseConsumer.class);
 
@@ -47,7 +47,7 @@ public abstract class BaseConsumer<K, V, T> implements Serializable {
 
     protected ThreadPoolExecutor processExecutor;
 
-    protected BaseTask<K, V, T> task;
+    protected BaseTask<K, V, R> task;
 
     @PostConstruct
     public synchronized void init() {
@@ -129,17 +129,17 @@ public abstract class BaseConsumer<K, V, T> implements Serializable {
         return count.getAndIncrement();
     }
 
-    public static class BaseTask<K, V, T> implements Runnable, Serializable {
+    public static class BaseTask<K, V, R> implements Runnable, Serializable {
 
         private final GargleConfig.KafkaConsumerConfig consumerConfig;
 
-        private final BaseConsumer<K, V, T> process;
+        private final BaseConsumer<K, V, R> process;
 
         private volatile boolean run = true;
 
         private volatile boolean stop = false;
 
-        public BaseTask(GargleConfig.KafkaConsumerConfig consumerConfig, BaseConsumer<K, V, T> process) {
+        public BaseTask(GargleConfig.KafkaConsumerConfig consumerConfig, BaseConsumer<K, V, R> process) {
             this.consumerConfig = consumerConfig;
             this.process = process;
         }
@@ -172,9 +172,9 @@ public abstract class BaseConsumer<K, V, T> implements Serializable {
                 try {
                     ConsumerRecords<K, V> records = kafkaConsumer.poll(Duration.ofMillis(1000));
                     if (records != null && records.count() > 0) {
-                        CopyOnWriteArrayList<Callable<T>> callables = new CopyOnWriteArrayList<>();
+                        CopyOnWriteArrayList<Callable<R>> callables = new CopyOnWriteArrayList<>();
                         for (ConsumerRecord<K, V> record : records) {
-                            Callable<T> callable = () -> {
+                            Callable<R> callable = () -> {
                                 String logPrefix = log_prefix + process.getCount() + "-";
                                 try {
                                     return process.processRecord(record, logPrefix);
@@ -188,10 +188,10 @@ public abstract class BaseConsumer<K, V, T> implements Serializable {
                         }
 
                         if (callables.size() != 0) {
-                            List<Future<T>> futures;
+                            List<Future<R>> futures;
                             futures = process.processExecutor.invokeAll(callables, invokeTimeOut, TimeUnit.MILLISECONDS);
-                            for (Future<T> future : futures) {
-                                T t;
+                            for (Future<R> future : futures) {
+                                R t;
                                 try {
                                     t = future.get(getTimeOut, TimeUnit.MILLISECONDS);
                                 } catch (TimeoutException e) {
@@ -278,10 +278,10 @@ public abstract class BaseConsumer<K, V, T> implements Serializable {
 
     public abstract GargleConfig getGargleConfig();
 
-    public abstract T processRecord(ConsumerRecord<K, V> record, String logPrefix);
+    public abstract R processRecord(ConsumerRecord<K, V> record, String logPrefix);
 
     public abstract void onProcessRecordFail(ConsumerRecord<K, V> record, Exception e, String logPrefix);
 
-    public abstract void processT(T t);
+    public abstract void processT(R t);
 
 }
