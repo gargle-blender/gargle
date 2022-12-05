@@ -1,6 +1,8 @@
 package com.gargle.common.utils.http;
 
 import com.alibaba.fastjson.JSONObject;
+import com.gargle.common.enumeration.http.ContentTypeEnum;
+import com.gargle.common.enumeration.http.MethodTypeEnum;
 import com.gargle.common.exception.GargleException;
 import com.gargle.common.utils.http.base.Response;
 import com.gargle.common.utils.string.StringUtil;
@@ -24,11 +26,79 @@ import java.util.Map;
  *
  * @author qingwen.shang
  * @email shangqaq@163.com
- * @date 2022/11/30 10:28
  */
 public final class HTTPUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(HTTPUtil.class);
+
+    public Response<String> sendGet(
+            String url,
+            Map<String, Object> urlParams) {
+        return send(url, MethodTypeEnum.GET, ContentTypeEnum.APPLICATION_JSON, 60_000, 60_000,
+                urlParams, null, null);
+    }
+
+    public Response<String> sendGet(
+            String url,
+            Map<String, Object> urlParams,
+            Map<String, String> headerParams) {
+        return send(url, MethodTypeEnum.GET, ContentTypeEnum.APPLICATION_JSON, 60_000, 60_000,
+                urlParams, null, headerParams);
+    }
+
+    public Response<String> sendGet(
+            String url,
+            ContentTypeEnum contentType,
+            Integer readTimeout,
+            Integer connectTimeout,
+            Map<String, Object> urlParams,
+            Map<String, Object> bodyParams,
+            Map<String, String> headerParams) {
+        return send(url, MethodTypeEnum.GET, contentType, readTimeout, connectTimeout,
+                urlParams, bodyParams, headerParams);
+    }
+
+    public Response<String> sendPost(
+            String url,
+            Map<String, Object> bodyParams) {
+        return send(url, MethodTypeEnum.POST, ContentTypeEnum.APPLICATION_X_WWW_FORM_URLENCODED,
+                60_000, 60_000,
+                null, bodyParams, null);
+    }
+
+    public Response<String> sendPost(
+            String url,
+            Map<String, Object> bodyParams,
+            Map<String, String> headerParams) {
+        return send(url, MethodTypeEnum.POST, ContentTypeEnum.APPLICATION_X_WWW_FORM_URLENCODED,
+                60_000, 60_000,
+                null, bodyParams, headerParams);
+    }
+
+    public Response<String> sendPost(
+            String url,
+            ContentTypeEnum contentType,
+            Integer readTimeout,
+            Integer connectTimeout,
+            Map<String, Object> urlParams,
+            Map<String, Object> bodyParams,
+            Map<String, String> headerParams) {
+        return send(url, MethodTypeEnum.POST, contentType, readTimeout, connectTimeout,
+                urlParams, bodyParams, headerParams);
+    }
+
+    public Response<String> send(
+            String url,
+            MethodTypeEnum methodType,
+            ContentTypeEnum contentType,
+            Integer readTimeout,
+            Integer connectTimeout,
+            Map<String, Object> urlParams,
+            Map<String, Object> bodyParams,
+            Map<String, String> headerParams) {
+        return send(url, methodType.name(), contentType.getCode(), readTimeout, connectTimeout,
+                urlParams, bodyParams, headerParams);
+    }
 
     public Response<String> send(
             String url,
@@ -217,12 +287,7 @@ public final class HTTPUtil {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        connection.setHostnameVerifier(new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        });
+        connection.setHostnameVerifier((hostname, session) -> true);
     }
 
     private static final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
