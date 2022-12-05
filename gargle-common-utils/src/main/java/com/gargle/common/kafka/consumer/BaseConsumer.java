@@ -35,6 +35,8 @@ public abstract class BaseConsumer<K, V, T> implements Serializable {
 
     private static final AtomicLong count = new AtomicLong(0);
 
+    private static final AtomicLong THREAD_SUFFIX = new AtomicLong(0);
+
     private volatile boolean start = false;
 
     private GargleConfig.KafkaConsumerConfig consumerConfig;
@@ -112,7 +114,10 @@ public abstract class BaseConsumer<K, V, T> implements Serializable {
                 60,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(size),
-                runnable -> new Thread(runnable, consumerConfig.getConsumerName())
+                runnable -> new Thread(
+                        runnable,
+                        consumerConfig.getConsumerName() + "-" + THREAD_SUFFIX.incrementAndGet()
+                )
         );
     }
 
