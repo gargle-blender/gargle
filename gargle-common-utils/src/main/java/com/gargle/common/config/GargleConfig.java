@@ -4,6 +4,7 @@ import com.alibaba.druid.filter.config.ConfigTools;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.fastjson.JSONObject;
 import com.gargle.common.enumeration.kafka.AutoOffsetResetEnum;
+import com.gargle.common.enumeration.stream.StreamModeEnum;
 import com.gargle.common.exception.GargleException;
 import com.gargle.common.utils.config.ConfigUtil;
 import com.gargle.common.utils.hdfs.HDFSUtil;
@@ -23,6 +24,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ClassName:GargleConfig
@@ -50,6 +52,27 @@ public class GargleConfig {
 
     protected List<KafkaProducerConfig> kafkaProducers = new ArrayList<>();
 
+    protected StreamThreadPoolConfig streamThreadPoolConfig = new StreamThreadPoolConfig();
+
+    /**
+     * 那些节点不执行. 节点名称之间逗号隔开.
+     */
+    private String[] streamExcludeNode;
+
+    /**
+     * 哪些步骤不执行, 步骤名称之间逗号隔开.
+     */
+    private String[] streamExcludeStep;
+
+    /**
+     * 只执行哪些节点, 节点名称之间逗号隔开.
+     */
+    private String[] streamContainsOnlyNode;
+
+    private StreamModeEnum streamMode = StreamModeEnum.LOCOMOTIVE;
+
+    private String[] cabinStreamLinkNodes;
+
     @PostConstruct
     public void init() {
         if (datasource.isEnable()) {
@@ -57,12 +80,12 @@ public class GargleConfig {
         }
 
         Set<String> set = new HashSet<>(16);
-        if (kafkaConsumers != null && kafkaConsumers.size() > 0){
+        if (kafkaConsumers != null && kafkaConsumers.size() > 0) {
             for (KafkaConsumerConfig kafkaConsumer : kafkaConsumers) {
-                if (kafkaConsumer == null || !kafkaConsumer.isEnable()){
+                if (kafkaConsumer == null || !kafkaConsumer.isEnable()) {
                     continue;
                 }
-                if (set.contains(kafkaConsumer.getConsumerName())){
+                if (set.contains(kafkaConsumer.getConsumerName())) {
                     throw new IllegalArgumentException("[kafkaConsumers] 配置存在两个值相同的 ConsumerName 属性!");
                 }
 
@@ -71,12 +94,12 @@ public class GargleConfig {
         }
         set.clear();
 
-        if (kafkaProducers != null && kafkaProducers.size() > 0){
+        if (kafkaProducers != null && kafkaProducers.size() > 0) {
             for (KafkaProducerConfig kafkaProducer : kafkaProducers) {
-                if (kafkaProducer == null || !kafkaProducer.isEnable()){
+                if (kafkaProducer == null || !kafkaProducer.isEnable()) {
                     continue;
                 }
-                if (set.contains(kafkaProducer.getProducerName())){
+                if (set.contains(kafkaProducer.getProducerName())) {
                     throw new IllegalArgumentException("[kafkaProducers] 配置存在两个值相同的 ProducerName 属性!");
                 }
                 set.add(kafkaProducer.getProducerName());
@@ -471,7 +494,7 @@ public class GargleConfig {
             map.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, this.consumerAutoCommitIntervalMs);
 
             Map<String, String> mapOther = ConfigUtil.buildProperties(otherConfProperties);
-            if (mapOther != null && mapOther.size() > 0){
+            if (mapOther != null && mapOther.size() > 0) {
                 map.putAll(mapOther);
             }
         }
@@ -555,7 +578,7 @@ public class GargleConfig {
                 throw new GargleException("[KafkaProducerConfig] bootstrap.servers 配置缺失.");
             }
 
-            if (StringUtil.isBlank(this.producerName)){
+            if (StringUtil.isBlank(this.producerName)) {
                 throw new GargleException("[KafkaProducerConfig] producerName 配置缺失.");
             }
 
@@ -576,12 +599,33 @@ public class GargleConfig {
             properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, this.requestTimeoutMs);
 
             Map<String, String> map = ConfigUtil.buildProperties(otherConfProperties);
-            if (map != null && map.size() > 0){
+            if (map != null && map.size() > 0) {
                 properties.putAll(map);
             }
 
             return properties;
         }
 
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class StreamThreadPoolConfig {
+        private Integer coreSize = Runtime.getRuntime().availableProcessors();
+
+        /**
+         * 建议 kafka最大拉取数 * 每个节点并行处理最大step数之和.
+         */
+        private Integer maxSize = Runtime.getRuntime().availableProcessors() * 2;
+
+        private Long keepAliveTime = 60L;
+
+        private TimeUnit timeUnit = TimeUnit.SECONDS;
+
+        /**
+         * 建议 kafka最大拉取数 * 每个节点并行处理step数之和.
+         */
+        private Integer queueSize = 2000;
     }
 }

@@ -58,7 +58,7 @@ public class Response<T> implements Serializable {
         Response<T> response = new Response<T>();
         response.setSuccess(false);
         response.setCode(500);
-        if (StringUtil.isNotBlank(message) ) {
+        if (StringUtil.isNotBlank(message)) {
             response.setMessage(message);
         } else {
             response.setMessage("执行失败!");
