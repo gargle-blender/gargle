@@ -66,7 +66,7 @@ public class JsonDataUtil {
         }
     }
 
-    public static void buildBigParam(String key, JSON json, List<Entity> entityList) {
+    private static void buildBigParam(String key, JSON json, List<Entity> entityList) {
         if (json == null){
             return;
         }
