@@ -57,10 +57,9 @@ public class JsonDataUtil {
         System.out.println(data.toJSONString());
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", "sqw");
-        jsonObject.put("age", 18);
+        jsonObject.put("data", data);
 
-        System.out.println(JSONObject.toJSONString(buildBig("S_S_TESTFIELD", data)));
+        System.out.println(JSONObject.toJSONString(buildBig("S_S_TESTFIELD", jsonObject)));
     }
 
 
@@ -91,7 +90,7 @@ public class JsonDataUtil {
                 }
                 if (entry.getValue() instanceof JSONArray) {
                     JSONArray array = (JSONArray) entry.getValue();
-                    buildArray(key, entityList, array);
+                    buildArray(buildKey(key, entry.getKey()), entityList, array);
                 } else if (entry.getValue() instanceof JSONObject) {
                     buildA(buildKey(key, entry.getKey()), (JSONObject) entry.getValue(), entityList);
                 } else {

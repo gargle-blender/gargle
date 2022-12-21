@@ -18,15 +18,20 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Test {
 
     public static void main(String[] args) {
+        // 要操作的流程对象信息
         MyEntity myEntity = new MyEntity();
         myEntity.setName("sqw");
         myEntity.setAge(new AtomicLong(0));
         String recode = JSONObject.toJSONString(myEntity);
 
+        // 初始化构建执行器
         MyLinkExecute execute = new MyLinkExecute();
         execute.init();
 
+        // 初始化client
         StreamConsumerClient<String> consumerClient = () -> execute;
+
+        // 将流程对象信息封装开始处理.
         consumerClient.process(recode);
 
 
