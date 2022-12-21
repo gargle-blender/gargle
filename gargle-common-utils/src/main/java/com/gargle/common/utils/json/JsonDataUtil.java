@@ -27,27 +27,40 @@ public class JsonDataUtil {
     private static final Logger logger = LoggerFactory.getLogger(JsonDataUtil.class);
 
     public static void main(String[] args) {
-        JSONObject jsonObject = new JSONObject();
-        JSONArray array = new JSONArray();
+        JSONArray data = new JSONArray();
 
-        for (int i = 0; i < 5; i++) {
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("name" + i, i);
-            jsonObject1.put("age" + i, i);
-            array.add(jsonObject1);
+        JSONArray array1 = new JSONArray();
+        JSONArray array11 = new JSONArray();
+        JSONArray array12= new JSONArray();
+        for (int i = 0; i < 2; i++) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", "sqw" + i);
+            jsonObject.put("age", i);
+            array11.add(jsonObject);
+            data.add(jsonObject);
+
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("name", "sqw" + i);
+            jsonObject2.put("age", i);
+            array12.add(jsonObject2);
+            data.add(jsonObject2);
         }
 
-        JSONObject jsonObject1 = new JSONObject();
-        jsonObject1.put("name","sqw");
-        jsonObject1.put("age", 16);
+        array1.add(array11);
+        array1.add(array12);
 
-        jsonObject.put("array", array);
-        jsonObject.put("A", "a");
-        jsonObject.put("b", "b");
-        jsonObject.put("info", jsonObject1);
+//        data.add(array1);
+//        data.add("1");
+//        data.add("2");
+//        data.add("3");
 
-        List<Entity> key = buildBig("key", jsonObject);
-        System.out.println(JSONObject.toJSONString(key));
+        System.out.println(data.toJSONString());
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", "sqw");
+        jsonObject.put("age", 18);
+
+        System.out.println(JSONObject.toJSONString(buildBig("S_S_TESTFIELD", jsonObject)));
     }
 
 
@@ -79,12 +92,28 @@ public class JsonDataUtil {
                 if (entry.getValue() instanceof JSONArray) {
                     JSONArray array = (JSONArray) entry.getValue();
                     for (int i = 0; i < array.size(); i++) {
-                        JSONObject arrayJSONObject = array.getJSONObject(i);
-                        buildA(
+                        Object obj = array.get(i);
+                        if (obj instanceof JSONObject){
+                            buildA(
+                                    buildKey("", key + "[" + i + "]"),
+                                    (JSONObject)obj,
+                                    entityList
+                            );
+                        } else if (obj instanceof JSONArray){
+                            buildA(
+                                    buildKey("", key + "[" + i + "]"),
+                                    (JSONArray)obj,
+                                    entityList
+                            );
+                        } else {
+                            entityList.add(new Entity(key + "[" + i + "]", "", getStringValue(obj)));
+                        }
+                        /*JSONObject arrayJSONObject = array.getJSONObject(i);
+                        buildBigParam(
                                 buildKey(key, entry.getKey() + "[" + i + "]"),
                                 arrayJSONObject,
                                 entityList
-                        );
+                        );*/
                     }
                 } else if (entry.getValue() instanceof JSONObject) {
                     buildA(buildKey(key, entry.getKey()), (JSONObject) entry.getValue(), entityList);
@@ -95,12 +124,29 @@ public class JsonDataUtil {
         } else if (json instanceof JSONArray){
             JSONArray array = (JSONArray) json;
             for (int i = 0; i < array.size(); i++) {
-                JSONObject arrayJSONObject = array.getJSONObject(i);
-                buildA(
+                Object obj = array.get(i);
+                if (obj instanceof JSONObject){
+                    buildA(
+                            buildKey("", key + "[" + i + "]"),
+                            (JSONObject)obj,
+                            entityList
+                    );
+                } else if (obj instanceof JSONArray){
+                    buildA(
+                            buildKey("", key + "[" + i + "]"),
+                            (JSONArray)obj,
+                            entityList
+                    );
+                } else {
+                    entityList.add(new Entity(key + "[" + i + "]", "", getStringValue(obj)));
+                }
+
+                /*JSONObject arrayJSONObject = array.getJSONObject(i);
+                buildBigParam(
                         buildKey(key, key + "[" + i + "]"),
                         arrayJSONObject,
                         entityList
-                );
+                );*/
             }
         } else {
             entityList.add(new Entity(key, key, JSONObject.toJSONString(json)));
@@ -127,12 +173,28 @@ public class JsonDataUtil {
                 if (entry.getValue() instanceof JSONArray) {
                     JSONArray array = (JSONArray) entry.getValue();
                     for (int i = 0; i < array.size(); i++) {
-                        JSONObject arrayJSONObject = array.getJSONObject(i);
+                        Object obj = array.get(i);
+                        if (obj instanceof JSONObject){
+                            buildBigParam(
+                                    buildKey("", key + "[" + i + "]"),
+                                    (JSONObject)obj,
+                                    entityList
+                            );
+                        } else if (obj instanceof JSONArray){
+                            buildBigParam(
+                                    buildKey("", key + "[" + i + "]"),
+                                    (JSONArray)obj,
+                                    entityList
+                            );
+                        } else {
+                            entityList.add(new Entity(key + "[" + i + "]", "", getStringValue(obj)));
+                        }
+                        /*JSONObject arrayJSONObject = array.getJSONObject(i);
                         buildBigParam(
                                 buildKey(key, entry.getKey() + "[" + i + "]"),
                                 arrayJSONObject,
                                 entityList
-                        );
+                        );*/
                     }
                 } else if (entry.getValue() instanceof JSONObject) {
                     buildBigParam(buildKey(key, entry.getKey()), (JSONObject) entry.getValue(), entityList);
@@ -143,12 +205,29 @@ public class JsonDataUtil {
         } else if (json instanceof JSONArray){
             JSONArray array = (JSONArray) json;
             for (int i = 0; i < array.size(); i++) {
-                JSONObject arrayJSONObject = array.getJSONObject(i);
+                Object obj = array.get(i);
+                if (obj instanceof JSONObject){
+                    buildBigParam(
+                            buildKey("", key + "[" + i + "]"),
+                            (JSONObject)obj,
+                            entityList
+                    );
+                } else if (obj instanceof JSONArray){
+                    buildBigParam(
+                            buildKey("", key + "[" + i + "]"),
+                            (JSONArray)obj,
+                            entityList
+                    );
+                } else {
+                    entityList.add(new Entity(key + "[" + i + "]", "", getStringValue(obj)));
+                }
+
+                /*JSONObject arrayJSONObject = array.getJSONObject(i);
                 buildBigParam(
                         buildKey(key, key + "[" + i + "]"),
                         arrayJSONObject,
                         entityList
-                );
+                );*/
             }
         } else {
             entityList.add(new Entity(key, key, JSONObject.toJSONString(json)));
